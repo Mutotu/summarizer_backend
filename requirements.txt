@@ -11,3 +11,4 @@ aiohttp
 pyYAML
 numpy
 langchain_experimental
+wikipedia
