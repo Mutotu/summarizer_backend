@@ -2,15 +2,6 @@ import os
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv(), override=True)
 
-# def load_document(file):
-#   from langchain.document_loaders import PyPDFLoader
-#   print(f'Loading {file}')
-#   loader = PyPDFLoader(file)
-#   data = loader.load()
-#   return data
-
-# data = load_document('./us_constitution.pdf')
-# print(data[1])
 
 # Funciton for file format
 def load_document(file):
@@ -33,9 +24,6 @@ def load_document(file):
   return data
 
 
-# data = load_document('./the_great_gatsby.docx')
-# print(data)
-
 # Wikipedia
 def load_from_wikipedia(query, lang='en', load_max_docs=2):
   from langchain.document_loaders import WikipediaLoader
@@ -43,5 +31,15 @@ def load_from_wikipedia(query, lang='en', load_max_docs=2):
   data = loader.load()
   return data
 
-data = load_from_wikipedia('GPT-4')
-print(data[0].page_content)
+# data = load_from_wikipedia('GPT-4')
+# print(data[0].page_content)
+
+def chunk_data(data, chunk_size=256):
+  from langchain.text_splitter import RecursiveCharacterTextSplitter
+  text_splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=0)
+  chunks = text_splitter.split_documents(data)
+  return chunks
+  
+  
+# chunks = chunk_data(load_document('./us_constitution.pdf'))
+# print(chunks)
