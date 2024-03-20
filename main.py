@@ -109,6 +109,41 @@ def delete_pinecone_index(index_name='all'):
     pc.delete_index(index_name)
     print('Ok')
     
-delete_pinecone_index()    
+# delete_pinecone_index()    
 
 vector_store = insert_or_fetch_embeddings('askadocument', chunks)
+
+
+
+def ask_and_get_answer(vector_store, q, k=3):
+    from langchain.chains import RetrievalQA
+    from langchain_openai import ChatOpenAI
+
+    llm = ChatOpenAI(model='gpt-3.5-turbo', temperature=1)
+
+    retriever = vector_store.as_retriever(search_type='similarity', search_kwargs={'k': k})
+
+    chain = RetrievalQA.from_chain_type(llm=llm, chain_type="stuff", retriever=retriever)
+    
+    answer = chain.invoke(q)
+    return answer
+  
+q = 'What is the whole document about?'
+answer = ask_and_get_answer(vector_store, q)
+# print(answer)
+
+
+import time
+i = 1
+print('Write Quit or Exit to quit.')
+while True:
+    q = input(f'Question #{i}: ')
+    i = i + 1
+    if q.lower() in ['quit', 'exit']:
+        print('Quitting ... bye bye!')
+        time.sleep(2)
+        break
+    
+    answer = ask_and_get_answer(vector_store, q)
+    print(f'\nAnswer: {answer}')
+    print(f'\n {"-" * 50} \n')
